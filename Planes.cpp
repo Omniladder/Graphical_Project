@@ -3,6 +3,7 @@
 #include <random>
 #include <iostream>
 
+
 using namespace std;
 
 int main()
@@ -18,33 +19,29 @@ int main()
 
     bool continue_run = true;
 
-   
-
+GLuint vID, fID, sID; 
     
-    Polygon Side;
+sID = activateShaders("shaders/vertexShader1.vert","shaders/fragShader1.frag", vID, fID);
 
+Shape triangle(3);
+triangle.add_Point(-.5,-.5);
+triangle.add_Point(.5,-.5);
+triangle.add_Point(0,.5);
 
-    Side.makePoint(.7,.7);
-    Side.makePoint(.7,-.7);
-    Side.makePoint(-.7,-.7);
-    Side.makePoint(-.7,.7);
-
-
-    
+triangle.ship_Shape(vID);
 
     while(continue_run)
     {
         PreCode(window); //Code goes after here
 
         
-        Side.draw_Polygon(window,false);
         
         
         
         continue_run = PostCode(window);
     }
 
-    glfwTerminate();
+    Close_Window(vID,fID);
 
     return 0;
 
