@@ -1,8 +1,8 @@
 #ifndef First_Library
 #define First_Library
 
-#include <cmath>    // for trigonometry functions
-#include <math.h>
+#include <iostream>
+#include <fstream>
 #include <string>
 #include <GL/glew.h>
 #include "glfw3.h" //Graphical usage
@@ -38,26 +38,36 @@ bool PostCode(GLFWwindow* window)
     }
 }
 
-GLFWwindow* Open_window(int width, int height, const char* title)
+
+GLFWwindow* Open_window(int windows_width, int windows_height, const char* windows_title)
 {
     if (!glfwInit())
     {
+        std::cout<<"::GLFW FAILED TO INTIALIZE PLEASE RETRY::"<<std::endl;
         return nullptr; // GLFW initialization failed
     }
 
-    GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(windows_width, windows_height, windows_title, nullptr, nullptr);
     if (!window)
     {
         glfwTerminate();
+        std::cout<<"::WINDOW FAILED TO OPEN PLEASE RETRY::"<<std::endl;
         return nullptr; // Window creation failed
     }
 
     glfwMakeContextCurrent(window);
     glewInit();
 
+
     return window;
 }
 
+void Close_Window(unsigned int Shader_ID, unsigned int Buffer_ID)
+{
+    glDeleteBuffers(1, &Buffer_ID);
+    glDeleteProgram(Shader_ID);
+    glfwTerminate();
+}
 
 
 static unsigned int CompileShader(const std::string source, GLuint type)
@@ -82,7 +92,7 @@ static unsigned int CompileShader(const std::string source, GLuint type)
     return id;
 }
 
-static GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
+static GLuint CreateShader(const std::string& vertexShader, const std::string& fragmentShader, GLuint& vID, GLuint&  fID)
 {
     GLuint programId = glCreateProgram();
     GLuint vertexShaderID = CompileShader(vertexShader, GL_VERTEX_SHADER);
@@ -114,15 +124,22 @@ std::string readInFile(const std::string& filename) {
 }
 
 
-unsigned int activateShaders(std::string verShader, std::string fragmentationShader)//enter file location of vertex and fragShader
+unsigned int activateShaders(std::string verShader, std::string fragmentationShader, GLuint& vID, GLuint& fID)//enter file location of vertex and fragShader
 {
     std::string vertexShader = readInFile(verShader);
     unsigned int shader;
     std::string fragmentShader = readInFile(fragmentationShader);
-    shader = CreateShader(vertexShader,fragmentShader);
+    shader = CreateShader(vertexShader,fragmentShader, vID, fID);
     
     glUseProgram(shader);
     return shader;
+}
+
+void Runtime_Reloading(GLFWwindow* window, unsigned int &shader, int key, const std::string& vertexShader, const std::string& fragmentShader, GLuint& vID, GLuint& fID ) {
+    
+    if (glfwGetKey(window, key) == GLFW_PRESS) {
+        shader = activateShaders(vertexShader, fragmentShader, vID, fID);
+    }
 }
 
 

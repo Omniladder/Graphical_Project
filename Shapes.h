@@ -1,615 +1,539 @@
-#include <cmath>    // for trigonometry functions
-#include <math.h>
-#include <string>
-#include <list>
+// Equation for Perspective return x * (2 / (z - user_Z)); or return y * (2 / (z - user_Z));
+
+#include <vector>
+#include "Open_GL_Basics.h"
+#include <GL/glew.h>
 #include "glfw3.h" //Graphical usage
 #include <iostream>
 
 using namespace std;
-
-
-
-/*
-Vertex code Below
-
-
-
-
-
-
-*/
-
-
-
-class Vertex {       // The class
-  public:             // Access specifier
-
-    Vertex();
-    Vertex(double, double, double);
-    Vertex(double, double);
-    Vertex(const Vertex&);
-
-    void Set_X(double);
-    void Set_Y(double);
-    void Set_Z(double);
-
-    void Set_Point(double,double,double);
-    void Set_Point(double,double);
-
-    void X_Rotation(double, double, double, double);
-    void Y_Rotation(double, double, double, double);
-    void Z_Rotation(double, double, double, double);
-
-    double  get_X() const;
-    double  get_Y() const;
-    double  get_Z() const;
-
-    double get_User_Z() const;
-    void set_User_Z(double);
-
-    double Real_X() const;
-    double Real_Y() const;
-
-
-    private:
-    double x,y,z;
-    static double user_Z;
-    
-};
-
-double Vertex::user_Z = -2;
-
-Vertex::Vertex()
-{}
-
-Vertex::Vertex(const Vertex& old)
-{
-    x = old.x;
-    y = old.y;
-    z = old.z;
-}
-
-Vertex::Vertex(double X_Value, double Y_Value)
-{
-    x = X_Value;
-    y = Y_Value;
-    z = 0;
-}
-
-Vertex::Vertex(double X_Value, double Y_Value, double Z_Value)
-{
-    x = X_Value;
-    y = Y_Value;
-    z = Z_Value;
-}
-
-double Vertex::get_User_Z() const
-{return user_Z;}
-
-void Vertex::set_User_Z(double newZ)
-{user_Z = newZ;}
-
-void Vertex::Set_Point(double X_Value, double Y_Value)
-{
-    x = X_Value;
-    y = Y_Value;
-    z = 0;
-}
-
-void Vertex::Set_Point(double X_Value, double Y_Value, double Z_Value)
-{
-    x = X_Value;
-    y = Y_Value;
-    z = Z_Value;
-}
-
-void Vertex::Set_X(double X_Value)
-{
-    x = X_Value;
-}
-
-void Vertex::Set_Y(double Y_Value)
-{
-    y = Y_Value;
-}
-
-void Vertex::Set_Z(double Z_Value)
-{
-    z = Z_Value;
-}
-
-double Vertex::get_Z() const
-{
-    return z;
-}
-
-double Vertex::get_Y() const
-{
-    return y;
-}
-
-double Vertex::get_X() const
-{
-    return x;
-}
-
-double Vertex::Real_X() const //x taking account for z where the point is actually displayed on the 2 dimensions
-{
-    if(z > user_Z)
-    {return x * (2 / (z - user_Z));}
-    else
-    {
-        return 20;
-    }
-}
-
-double Vertex::Real_Y() const //y taking account for z where the point is actually displayed on the 2 dimensions
-{
-    //return y / (1 - (z / (-1 * perspective * sqrt(y * y + z *z ))));
-    
-    if(z > user_Z)
-    {
-        return y * (2 / (z - user_Z));
-    }
-    else
-    {
-        return 20;
-    }
-}
-
-
-void Vertex::X_Rotation(double rPoint_x, double rPoint_y, double rPoint_z, double degrees)
-{
-    // Calculate Euclidean distance between vertex and rotation point
-    double distance = sqrt(pow(y - rPoint_y, 2) + pow(z - rPoint_z, 2));
-
-    // Calculate the angle using atan and convert degrees to radians
-    double angle = atan2((y - rPoint_y), (z - rPoint_z)) + degrees * M_PI / 180.0;
-
-    // Update y coordinate using sin of the angle and the distance
-    y = rPoint_y +distance * sin(angle);
-
-    // Update z coordinate using cos of the angle and the distance
-    z = rPoint_z + distance * cos(angle);
-}
-
-void Vertex::Y_Rotation(double rPoint_x, double rPoint_y, double rPoint_z, double degrees)
-{
-    // Calculate Euclidean distance between vertex and rotation point
-    double distance = sqrt(pow(x - rPoint_x, 2) + pow(z - rPoint_z, 2));
-
-    // Calculate the angle using atan and convert degrees to radians
-    double angle = atan2((z - rPoint_z), (x - rPoint_x)) + degrees * M_PI / 180.0;
-
-    // Update y coordinate using sin of the angle and the distance
-    z = rPoint_z +distance * sin(angle);
-
-    // Update z coordinate using cos of the angle and the distance
-    x = rPoint_x + distance * cos(angle);
-}
-
-void Vertex::Z_Rotation(double rPoint_x, double rPoint_y, double rPoint_z, double degrees)
-{
-    // Calculate Euclidean distance between vertex and rotation point
-    double distance = sqrt(pow(x - rPoint_x, 2) + pow(y - rPoint_y, 2));
-
-    // Calculate the angle using atan and convert degrees to radians
-    double angle = atan2((y - rPoint_y), (x - rPoint_x)) + degrees * M_PI / 180.0;
-
-    // Update y coordinate using sin of the angle and the distance
-    y = rPoint_y +distance * sin(angle);
-
-    // Update z coordinate using cos of the angle and the distance
-    x = rPoint_x + distance * cos(angle);
-}
-
-/*
-Polygon Code Below
-
-Polygons are intended to be plane styled shapes either in a 2d atmosphere, the side of a shape or some sort of flat plane like surface
-
-
-
-
-
-
-
-
-
-
-
-
-*/
-
-
-
-class Polygon{
-
-    public:
-    Polygon();
-    Polygon(float, float, float);
-    Polygon(const Polygon&);
-    void copy_Poly(const Polygon);
-
-
-    Vertex getPoint(int) const;
-    int get_Num_of_Points() const;
-
-    void setPoint(int, double,double,double);
-    void setPoint(int, double,double);
-    void draw_Polygon(GLFWwindow*, bool);
-    void setColor(float,float,float);
-    void makePoint(double,double);
-    void makePoint(double,double,double);
-    void clear();
-
-    void move_Polygon(double, double);
-    void move_Polygon(double, double, double);
-    void X_Rotation(double, double, double, double);
-    void Y_Rotation(double, double, double, double);
-    void Z_Rotation(double, double, double, double);
-
-
-    private:
-    //int num_of_sides;
-    float r,g,b;
-    list<Vertex> points;
-
-};
-
-Polygon::Polygon(const Polygon& old)
-{
-    r = old.r;
-    g = old.g;
-    b = old.b;
-    for (list<Vertex>::const_iterator it = old.points.begin(); it != old.points.end(); ++it)
-    {
-        Vertex* newPoint = new Vertex(*it);
-        points.push_back(*newPoint);
-    }
-}
-
-Polygon::Polygon()
-{
-    r = 255;
-    g = 255;
-    b = 255;
-}
-
-Polygon::Polygon(float red, float blue, float green)
-{
-    r = red;
-    b = blue;
-    g = green;
-}
-
-void Polygon::clear()
-{
-    points.clear();
-}
-
-void Polygon::copy_Poly(const Polygon copyPoly)
-{
-    points.clear();
-   list<Vertex>::const_iterator it = points.begin();
-
-    for(int i = 0; i < copyPoly.get_Num_of_Points() ; i++)
-    {
-        makePoint((*it).get_X(),(*it).get_Y(),(*it).get_Z());
-        it++;
-    } 
-}
-
-Vertex Polygon::getPoint(int num_point) const
-{
-    list<Vertex>::const_iterator it = points.begin();
-    for(int i = 0; i<num_point; i++)
-    {
-        it++;
-    }
-    return *it;
-}
-
-void Polygon::X_Rotation(double rPoint_x, double rPoint_y, double rPoint_z, double degrees)
-{
-    list<Vertex>::iterator it = points.begin();
-    for(int i = 0; i < points.size(); i++)
-        {
-            (*it).X_Rotation(rPoint_x,rPoint_y,rPoint_z,degrees);
-            it++;
-        }
-}
-
-void Polygon::Y_Rotation(double rPoint_x, double rPoint_y, double rPoint_z, double degrees)
-{
-    list<Vertex>::iterator it = points.begin();
-    for(int i = 0; i < points.size(); i++)
-        {
-            (*it).Y_Rotation(rPoint_x,rPoint_y,rPoint_z,degrees);
-            it++;
-        }
-}
-
-void Polygon::Z_Rotation(double rPoint_x, double rPoint_y, double rPoint_z, double degrees)
-{
-    list<Vertex>::iterator it = points.begin();
-    for(int i = 0; i < points.size(); i++)
-        {
-            (*it).Z_Rotation(rPoint_x,rPoint_y,rPoint_z,degrees);
-            it++;
-        }
-}
-
-void Polygon::makePoint(double x, double y)
-{
-    Vertex* newPoint = new Vertex(x, y);
-    points.push_back(*newPoint);
-
-}
-
-
-
-void Polygon::makePoint(double x, double y, double z)
-{
-    Vertex* newPoint = new Vertex(x, y, z);
-    points.push_back(*newPoint);
-}
-
-int Polygon::get_Num_of_Points() const
-{return points.size();}
-
-void Polygon::setPoint(int side, double x, double y, double z)
-{
-    list<Vertex>::iterator it = points.begin();
-    for(int i = 0; i<side; i++)
-    {
-        it++;
-    }
-    (*it).Set_Point(x, y, z);
-}
-
-void Polygon::move_Polygon(double xShift, double yShift)
-{
-    list<Vertex>::iterator it = points.begin();
-
-    for(int i = 0; i < points.size(); i++)
-    {
-        (*it).Set_X((*it).get_X() + xShift);
-        (*it).Set_Y((*it).get_Y() + yShift);
-        it++;
-    }
-}
-
-void Polygon::move_Polygon(double xShift, double yShift, double zShift)
-{
-    list<Vertex>::iterator it = points.begin();
-
-    for(int i = 0; i < points.size(); i++)
-    {
-        (*it).Set_X((*it).get_X() + xShift);
-        (*it).Set_Y((*it).get_Y() + yShift);
-        (*it).Set_Z((*it).get_Z() + zShift);
-        it++;
-    }
-}
-
-void Polygon::setColor(float red, float green, float blue)
-{
-    r = red;
-    g = green;
-    b = blue;
-}
-
-void Polygon::setPoint(int side, double x, double y)
-{
-    list<Vertex>::iterator it = points.begin(); 
-     for(int i = 0; i < side; i++)
-    {
-        it++;
-    }
-    (*it).Set_Point(x, y);
-}
-
-void Polygon::draw_Polygon(GLFWwindow* window, bool shaded)
-{
-    if(shaded)
-    {
-        glBegin(GL_TRIANGLE_FAN); //starts shape
-    }
-    else
-    {
-        glBegin(GL_LINE_STRIP); //starts shape
-    }
-
-    int window_width, window_height;
-
-    glfwGetWindowSize(window, &window_width, &window_height);
-
-    glColor3f(r / 255, g / 255, b / 255); 
-
-    list<Vertex>::iterator it = points.begin(); 
-
-    for (int i = 0; i < points.size(); i++)
-    {
-        glVertex2f((*it).Real_X() * (window_height * 1.0 / window_width), (*it).Real_Y() ); //graphs each point
-        it++;
-    }
-
-    glVertex2f((*points.begin()).Real_X() * (window_height * 1.0 / window_width), (*points.begin()).Real_Y());
-    
-
-    glEnd(); //ends shape
-
-}
-/*
-Shape Code Below
-Shapes are collections of polygons which I can hopefully use to make more complicated non plane styled shapes polyhedras
-
-
-
-
-
-*/
-
 class Shape
 {
+	public:
+	Shape(); //Create Shape with no Vertexes as Default
+	Shape(int);//Create  Shape with set number of vertexes to speed up processes
+	~Shape();
+	
+	
 
-    public:
-    Shape();
+	void addCap(int); //Adds Capacity to the vertex vector for future usage
+	int getNumPoints();
 
-    void draw_Shape(GLFWwindow*, bool);
+	GLfloat getPoint_X(int);
+	GLfloat getPoint_Y(int);	
+	GLfloat getPoint_Z(int);
+	
+	GLfloat getPoint_R(int);
+	GLfloat getPoint_G(int);	
+	GLfloat getPoint_B(int);
+	GLfloat getPoint_A(int);
 
-    void setSide(int, Polygon);
-    Polygon& getSide(int);
-    Polygon getSide_const(int) const;
+	GLfloat getPoint_Normal_X(int);
+	GLfloat getPoint_Normal_Y(int);	
+	GLfloat getPoint_Normal_Z(int);
 
-    void addSide(Polygon);
+	GLfloat getPoint_S(int);
+	GLfloat getPoint_T(int);
 
-    void move_Polygon(double, double);
-    void move_Polygon(double, double, double);
-    void X_Rotation(double, double, double, double);
-    void Y_Rotation(double, double, double, double);
-    void Z_Rotation(double, double, double, double);
+	void add_Point(GLfloat X, GLfloat Y);
+	void add_Point(GLfloat X, GLfloat Y, GLfloat Z);
+	void add_Point(GLfloat X, GLfloat Y,GLfloat R, GLfloat G, GLfloat B,GLfloat A);
+	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A);
+	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat S, GLfloat T);
+	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ);
+	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ, GLfloat S, GLfloat T);
 
-    void setColor(float,float,float);
 
+	void set_X(int, GLfloat);
+	void set_Y(int, GLfloat);
+	void set_Z(int, GLfloat);
 
-    int get_number_of_sides() const;
+	void set_R(int, GLfloat);
+	void set_G(int, GLfloat);
+	void set_B(int, GLfloat);
+	void set_A(int, GLfloat);
 
-    private:
-    list<Polygon> sides;
+	void set_Normal_X(int, GLfloat);
+	void set_Normal_Y(int, GLfloat);
+	void set_Normal_Z(int, GLfloat);
 
+	void set_S(int, GLfloat);
+	void set_T(int, GLfloat);
+
+	void ship_Shape(GLint); //TODO Get this to work Might need to use VAO's to store every aspet of the vertex in seperate VBO's and Use that perhaps location may need to be multiplied by 4 to allow for 3 locations for the VBO's to be store in
+	unsigned int get_ID();
+	
+	private:
+	vector<GLfloat> vertexes;
+	int NumofPoints;
+	int VertexSize = 12;
+	unsigned int shape_location;
+		
+	bool ValidVertex(int); //Checks if the Vertex exists
 };
 
-Shape::Shape()
-{}
+static unsigned int num_of_Shapes = 0;
 
+	Shape::Shape()
+	{
+	NumofPoints =0;
+	shape_location = num_of_Shapes;
+	num_of_Shapes++;
+	}
 
-int Shape::get_number_of_sides() const
+	Shape::Shape(int Points)
+	{
+	NumofPoints = Points;
+	addCap(Points);
+	shape_location = num_of_Shapes;
+	num_of_Shapes++;
+	}
+
+Shape::~Shape()
 {
-    return sides.size();
+
 }
 
+	void Shape::addCap(int newCapacity)
+	{
+	vertexes.reserve(vertexes.capacity() + newCapacity * VertexSize);
+	}
+
+	int Shape::getNumPoints()
+	{
+	return NumofPoints;
+	}
+
+	GLfloat Shape::getPoint_X(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_Y(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 1];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_Z(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 2];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_R(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 3];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_G(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 4];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_B(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 5];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_A(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 6];
+	else
+	return -1;
+	}	
+
+	GLfloat Shape::getPoint_Normal_X(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 7];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_Normal_Y(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 8];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_Normal_Z(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 9];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_S(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize +10];
+	else
+	return -1;
+	}
+
+	GLfloat Shape::getPoint_T(int pointIndex)
+	{
+	if(ValidVertex(pointIndex))
+	return vertexes[pointIndex * VertexSize + 11];
+	else
+	return -1;
+	}
+
+	void Shape::ship_Shape(GLint vShader)
+	{
+	GLuint vao;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexes.capacity(), vertexes.data(), GL_DYNAMIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);//Location LOCATION
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);//COLOR LOCATION
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);//Texture LOCATION
+	glEnableVertexAttribArray(2);
+	
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, 0);//Normal LOCATION
+	glEnableVertexAttribArray(3);
+	
+	glBindVertexArray(0);
+	}
 
 
-void Shape::setColor(float r, float g, float b)
+	bool Shape::ValidVertex(int pointIndex)
+	{
+	if(pointIndex > NumofPoints && 0 < pointIndex)
+	{return true;}
+	else
+	{return false;}
+	}
+
+	void Shape::add_Point(GLfloat X, GLfloat Y)
+	{
+	if(vertexes.size() > vertexes.capacity()-VertexSize)
+	{
+	addCap(1);
+	}
+	
+	vertexes[NumofPoints*VertexSize] = X;
+	vertexes[NumofPoints*VertexSize+1] = Y;
+	vertexes[NumofPoints*VertexSize+2] = 0;
+	vertexes[NumofPoints*VertexSize+3] = 255;
+	vertexes[NumofPoints*VertexSize+4] = 255;
+	vertexes[NumofPoints*VertexSize+5] = 255;
+	vertexes[NumofPoints*VertexSize+6] = 255;
+	vertexes[NumofPoints*VertexSize+7] = -1;
+	vertexes[NumofPoints*VertexSize+8] = -1;
+	vertexes[NumofPoints*VertexSize+9] = -1;
+	vertexes[NumofPoints*VertexSize+10] = 0;
+	vertexes[NumofPoints*VertexSize+11] = 0;
+	
+	NumofPoints++;
+	}
+
+
+	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat Z)
+	{
+	if(vertexes.size() > vertexes.capacity()-VertexSize)
+	{
+	addCap(1);
+	}
+	
+	vertexes[NumofPoints*VertexSize] = X;
+	vertexes[NumofPoints*VertexSize+1] = Y;
+	vertexes[NumofPoints*VertexSize+2] = Z;
+	vertexes[NumofPoints*VertexSize+3] = 255;
+	vertexes[NumofPoints*VertexSize+4] = 255;
+	vertexes[NumofPoints*VertexSize+5] = 255;
+	vertexes[NumofPoints*VertexSize+6] = 255;
+	vertexes[NumofPoints*VertexSize+7] = -1;
+	vertexes[NumofPoints*VertexSize+8] = -1;
+	vertexes[NumofPoints*VertexSize+9] = -1;
+	vertexes[NumofPoints*VertexSize+10] = 0;
+	vertexes[NumofPoints*VertexSize+11] = 0;
+	
+	NumofPoints++;
+	}
+
+
+	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat R, GLfloat G, GLfloat B, GLfloat A)
+	{
+	if(vertexes.size() > vertexes.capacity()-VertexSize)
+	{
+	addCap(1);
+	}
+	
+	vertexes[NumofPoints*VertexSize] = X;
+	vertexes[NumofPoints*VertexSize+1] = Y;
+	vertexes[NumofPoints*VertexSize+2] = 0;
+	vertexes[NumofPoints*VertexSize+3] = R;
+	vertexes[NumofPoints*VertexSize+4] = G;
+	vertexes[NumofPoints*VertexSize+5] = B;
+	vertexes[NumofPoints*VertexSize+6] = A;
+	vertexes[NumofPoints*VertexSize+7] = -1;
+	vertexes[NumofPoints*VertexSize+8] = -1;
+	vertexes[NumofPoints*VertexSize+9] = -1;
+	vertexes[NumofPoints*VertexSize+10] = 0;
+	vertexes[NumofPoints*VertexSize+11] = 0;
+	
+	NumofPoints++;
+	}
+
+		void Shape::add_Point(GLfloat X, GLfloat Y,GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A)
+	{
+	if(vertexes.size() > vertexes.capacity()-VertexSize)
+	{
+	addCap(1);
+	}
+	
+	vertexes[NumofPoints*VertexSize] = X;
+	vertexes[NumofPoints*VertexSize+1] = Y;
+	vertexes[NumofPoints*VertexSize+2] = Z;
+	vertexes[NumofPoints*VertexSize+3] = R;
+	vertexes[NumofPoints*VertexSize+4] = G;
+	vertexes[NumofPoints*VertexSize+5] = B;
+	vertexes[NumofPoints*VertexSize+6] = A;
+	vertexes[NumofPoints*VertexSize+7] = -1;
+	vertexes[NumofPoints*VertexSize+8] = -1;
+	vertexes[NumofPoints*VertexSize+9] = -1;
+	vertexes[NumofPoints*VertexSize+10] = 0;
+	vertexes[NumofPoints*VertexSize+11] = 0;
+	
+	NumofPoints++;
+	}
+
+	void Shape::add_Point(GLfloat X, GLfloat Y,GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat S, GLfloat T)
+	{
+	if(vertexes.size() > vertexes.capacity()-VertexSize)
+	{
+	addCap(1);
+	}
+	
+	vertexes[NumofPoints*VertexSize] = X;
+	vertexes[NumofPoints*VertexSize+1] = Y;
+	vertexes[NumofPoints*VertexSize+2] = Z;
+	vertexes[NumofPoints*VertexSize+3] = R;
+	vertexes[NumofPoints*VertexSize+4] = G;
+	vertexes[NumofPoints*VertexSize+5] = B;
+	vertexes[NumofPoints*VertexSize+6] = A;
+	vertexes[NumofPoints*VertexSize+7] = -1;
+	vertexes[NumofPoints*VertexSize+8] = -1;
+	vertexes[NumofPoints*VertexSize+9] = -1;
+	vertexes[NumofPoints*VertexSize+10] = S;
+	vertexes[NumofPoints*VertexSize+11] = T;
+	
+	NumofPoints++;
+	}
+
+	
+	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ)
+	{
+	if(vertexes.size() > vertexes.capacity()-VertexSize)
+	{
+	addCap(1);
+	}
+	
+	vertexes[NumofPoints*VertexSize] = X;
+	vertexes[NumofPoints*VertexSize+1] = Y;
+	vertexes[NumofPoints*VertexSize+2] = Z;
+	vertexes[NumofPoints*VertexSize+3] = R;
+	vertexes[NumofPoints*VertexSize+4] = G;
+	vertexes[NumofPoints*VertexSize+5] = B;
+	vertexes[NumofPoints*VertexSize+6] = A;
+	vertexes[NumofPoints*VertexSize+7] = NX;
+	vertexes[NumofPoints*VertexSize+8] = NY;
+	vertexes[NumofPoints*VertexSize+9] = NZ;
+	vertexes[NumofPoints*VertexSize+10] = 0;
+	vertexes[NumofPoints*VertexSize+11] = 0;
+	
+	NumofPoints++;
+	}
+
+
+	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ, GLfloat S, GLfloat T)
+	{
+	if(vertexes.size() > vertexes.capacity()-VertexSize)
+	{
+	addCap(1);
+	}
+	
+	vertexes[NumofPoints*VertexSize] = X;
+	vertexes[NumofPoints*VertexSize+1] = Y;
+	vertexes[NumofPoints*VertexSize+2] = Z;
+	vertexes[NumofPoints*VertexSize+3] = R;
+	vertexes[NumofPoints*VertexSize+4] = G;
+	vertexes[NumofPoints*VertexSize+5] = B;
+	vertexes[NumofPoints*VertexSize+6] = A;
+	vertexes[NumofPoints*VertexSize+7] = NX;
+	vertexes[NumofPoints*VertexSize+8] = NY;
+	vertexes[NumofPoints*VertexSize+9] = NZ;
+	vertexes[NumofPoints*VertexSize+10] = S;
+	vertexes[NumofPoints*VertexSize+11] = T;
+	
+	NumofPoints++;
+	}
+
+
+	void Shape::set_X(int point, GLfloat X)
+	{
+	if(point < NumofPoints)
+	{
+	vertexes[point*VertexSize] = X;
+	}
+	else
+	{
+		
+	}
+	}
+	
+	void Shape::set_Y(int point, GLfloat Y)
+	{
+	if(point < NumofPoints)
+	{
+	vertexes[point*VertexSize + 1] = Y;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
+	}
+
+	void Shape::set_Z(int point, GLfloat Z)
+	{
+	if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 2] = Z;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
+	}
+
+	void Shape::set_R(int point, GLfloat R)
 {
-   list<Polygon>::iterator it = sides.begin();
-
-    for(int i = 0; i < sides.size(); i++)
-    {
-        (*it).setColor(r,g,b);
-        it++;
-    } 
+	if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 3] = R;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
+}
+	void Shape::set_G(int point, GLfloat G)
+	{
+	if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 4] = G;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
+}
+	void Shape::set_B(int point, GLfloat B)
+{
+if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 5] = B;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
+}
+	void Shape::set_A(int point, GLfloat A)
+{
+if(point < NumofPoints)
+	{
+		vertexes[point * VertexSize + 6] = A;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
 }
 
-void Shape::Z_Rotation(double r_x, double r_y, double r_z, double angle)
+	void Shape::set_Normal_X(int point, GLfloat NX)
 {
-   list<Polygon>::iterator it = sides.begin();
-
-    for(int i = 0; i < sides.size(); i++)
-    {
-        (*it).Z_Rotation(r_x,r_y,r_z,angle);
-        it++;
-    } 
+if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 7] = NX;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
 }
-
-
-void Shape::Y_Rotation(double r_x, double r_y, double r_z, double angle)
+	void Shape::set_Normal_Y(int point, GLfloat NY){
+	if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 8] = NY;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
+}
+	void Shape::set_Normal_Z(int point, GLfloat NZ)
 {
-   list<Polygon>::iterator it = sides.begin();
-
-    for(int i = 0; i < sides.size(); i++)
-    {
-        (*it).Y_Rotation(r_x,r_y,r_z,angle);
-        it++;
-    } 
+if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 9] = NZ;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
 }
-
-void Shape::X_Rotation(double r_x, double r_y, double r_z, double angle)
+	void Shape::set_S(int point, GLfloat S)
 {
-   list<Polygon>::iterator it = sides.begin();
-
-    for(int i = 0; i < sides.size(); i++)
-    {
-        (*it).X_Rotation(r_x,r_y,r_z,angle);
-        it++;
-    } 
+if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 10] = S;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}
 }
-
-void Shape::move_Polygon(double xMove,double yMove, double zMove)
+	void Shape::set_T(int point, GLfloat T)
 {
-     list<Polygon>::iterator it = sides.begin();
-
-    for(int i = 0; i < sides.size(); i++)
-    {
-        (*it).move_Polygon(xMove,yMove,zMove);
-        it++;
-    }
+if(point < NumofPoints)
+	{
+	vertexes[point * VertexSize + 11] = T;
+	}
+	else
+	{
+	std::cout<<"CALLED INVALID POINT"<<endl;
+	}	
 }
-
-void Shape::move_Polygon(double xMove,double yMove)
-{
-     list<Polygon>::iterator it = sides.begin();
-
-    for(int i = 0; i < sides.size(); i++)
-    {
-        (*it).move_Polygon(xMove,yMove);
-        it++;
-    }
-}
-
-void Shape::addSide(Polygon newPoly)
-{
-    sides.push_back(newPoly);
-}
-
-void Shape::setSide(int side, Polygon newSide)
-{
-    list<Polygon>::iterator it = sides.begin(); 
-
-    for (int i = 0; i < side; i++)
-    {
-        it++;
-    }
-    (*it).copy_Poly(newSide);
-}
-
-Polygon& Shape::getSide(int side)
-{
-    list<Polygon>::iterator it = sides.begin(); 
-
-    for (int i = 0; i < side; i++)
-    {
-        it++;
-    }
-    return (*it);
-}
-
-Polygon Shape::getSide_const(int side) const
-{
-    list<Polygon>::const_iterator it = sides.begin(); 
-
-    for (int i = 0; i < side; i++)
-    {
-        it++;
-    }
-    return (*it);
-}
-
-
-void Shape::draw_Shape(GLFWwindow* window,bool shaded)
-{
-    list<Polygon>::iterator it = sides.begin(); 
-
-
-
-    for (int i = 0; i < sides.size(); i++)
-    {
-        (*it).draw_Polygon(window, shaded);
-        it++;
-    }
-
-    
-}
-
