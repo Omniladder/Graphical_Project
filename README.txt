@@ -1,7 +1,9 @@
-﻿g++ Planes.cpp -o main -lglfw -lGL
-g++ testing.cpp -o test -I/usr/include -L/dobrien6/lib -lGLEW -lglfw -lGL
+﻿
+use ./build_Program to compile
+
 
 g++ Planes.cpp -o main -lGLEW -lglfw -lGL
+
 
 
 RUN ON LINUX TO GET ACCESS TO GRAPHIC LIBRARIES USED

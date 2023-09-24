@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Compile the C++ program
+g++ Planes.cpp -o main -lGLEW -lglfw -lGL -lGLU
+
+# Check if compilation was successful
+if [ $? -eq 0 ]; then
+  echo "Compilation successful."
+else
+  echo "Compilation failed."
+fi
+
