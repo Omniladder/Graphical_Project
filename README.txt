@@ -1,5 +1,5 @@
 ﻿
-use ./build_Program to compile
+use ./build.sh to compile
 
 
 g++ Planes.cpp -o main -lGLEW -lglfw -lGL
