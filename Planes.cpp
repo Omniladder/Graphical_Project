@@ -8,7 +8,10 @@ using namespace std;
 
 int main()
 {
-    int window_width = 800, window_height = 800;
+
+
+
+int window_width = 800, window_height = 800;
 
     
 
@@ -20,15 +23,19 @@ int main()
     bool continue_run = true;
 
 GLuint vID, fID, sID; 
-    
+
+
+
+
 sID = activateShaders("shaders/vertexShader1.vert","shaders/fragShader1.frag", vID, fID);
+
 
 Shape triangle(3);
 triangle.add_Point(-.5,-.5);
 triangle.add_Point(.5,-.5);
 triangle.add_Point(0,.5);
 
-triangle.ship_Shape(vID);
+triangle.ship_Shape(vID);  
 
     while(continue_run)
     {

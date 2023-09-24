@@ -35,12 +35,6 @@ class Shape
 	GLfloat getPoint_S(int);
 	GLfloat getPoint_T(int);
 
-	void add_Point(GLfloat X, GLfloat Y);
-	void add_Point(GLfloat X, GLfloat Y, GLfloat Z);
-	void add_Point(GLfloat X, GLfloat Y,GLfloat R, GLfloat G, GLfloat B,GLfloat A);
-	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A);
-	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat S, GLfloat T);
-	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ);
 	void add_Point(GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ, GLfloat S, GLfloat T);
 
 
@@ -202,13 +196,17 @@ Shape::~Shape()
 
 	void Shape::ship_Shape(GLint vShader)
 	{
+
+
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
+	
 	unsigned int VBO;
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
 	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexes.capacity(), vertexes.data(), GL_DYNAMIC_DRAW);
 
@@ -236,170 +234,28 @@ Shape::~Shape()
 	{return false;}
 	}
 
-	void Shape::add_Point(GLfloat X, GLfloat Y)
+	void Shape::add_Point(GLfloat X = 0, GLfloat Y = 0, GLfloat Z = 0, GLfloat R = 255, GLfloat G = 255, GLfloat B = 255, GLfloat A = 255, GLfloat NX = -1, GLfloat NY = -1, GLfloat NZ = -1, GLfloat S = 0, GLfloat T = 0)
 	{
 	if(vertexes.size() > vertexes.capacity()-VertexSize)
 	{
 	addCap(1);
 	}
-	
-	vertexes[NumofPoints*VertexSize] = X;
-	vertexes[NumofPoints*VertexSize+1] = Y;
-	vertexes[NumofPoints*VertexSize+2] = 0;
-	vertexes[NumofPoints*VertexSize+3] = 255;
-	vertexes[NumofPoints*VertexSize+4] = 255;
-	vertexes[NumofPoints*VertexSize+5] = 255;
-	vertexes[NumofPoints*VertexSize+6] = 255;
-	vertexes[NumofPoints*VertexSize+7] = -1;
-	vertexes[NumofPoints*VertexSize+8] = -1;
-	vertexes[NumofPoints*VertexSize+9] = -1;
-	vertexes[NumofPoints*VertexSize+10] = 0;
-	vertexes[NumofPoints*VertexSize+11] = 0;
-	
-	NumofPoints++;
-	}
-
-
-	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat Z)
-	{
-	if(vertexes.size() > vertexes.capacity()-VertexSize)
-	{
-	addCap(1);
-	}
-	
-	vertexes[NumofPoints*VertexSize] = X;
-	vertexes[NumofPoints*VertexSize+1] = Y;
-	vertexes[NumofPoints*VertexSize+2] = Z;
-	vertexes[NumofPoints*VertexSize+3] = 255;
-	vertexes[NumofPoints*VertexSize+4] = 255;
-	vertexes[NumofPoints*VertexSize+5] = 255;
-	vertexes[NumofPoints*VertexSize+6] = 255;
-	vertexes[NumofPoints*VertexSize+7] = -1;
-	vertexes[NumofPoints*VertexSize+8] = -1;
-	vertexes[NumofPoints*VertexSize+9] = -1;
-	vertexes[NumofPoints*VertexSize+10] = 0;
-	vertexes[NumofPoints*VertexSize+11] = 0;
+	vertexes.push_back(X);
+    vertexes.push_back(Y);
+    vertexes.push_back(Z);
+    vertexes.push_back(R);
+    vertexes.push_back(G);
+    vertexes.push_back(B);
+    vertexes.push_back(A);
+    vertexes.push_back(NX);
+    vertexes.push_back(NY);
+    vertexes.push_back(NZ);
+    vertexes.push_back(S);
+    vertexes.push_back(T);
 	
 	NumofPoints++;
 	}
 
-
-	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat R, GLfloat G, GLfloat B, GLfloat A)
-	{
-	if(vertexes.size() > vertexes.capacity()-VertexSize)
-	{
-	addCap(1);
-	}
-	
-	vertexes[NumofPoints*VertexSize] = X;
-	vertexes[NumofPoints*VertexSize+1] = Y;
-	vertexes[NumofPoints*VertexSize+2] = 0;
-	vertexes[NumofPoints*VertexSize+3] = R;
-	vertexes[NumofPoints*VertexSize+4] = G;
-	vertexes[NumofPoints*VertexSize+5] = B;
-	vertexes[NumofPoints*VertexSize+6] = A;
-	vertexes[NumofPoints*VertexSize+7] = -1;
-	vertexes[NumofPoints*VertexSize+8] = -1;
-	vertexes[NumofPoints*VertexSize+9] = -1;
-	vertexes[NumofPoints*VertexSize+10] = 0;
-	vertexes[NumofPoints*VertexSize+11] = 0;
-	
-	NumofPoints++;
-	}
-
-		void Shape::add_Point(GLfloat X, GLfloat Y,GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A)
-	{
-	if(vertexes.size() > vertexes.capacity()-VertexSize)
-	{
-	addCap(1);
-	}
-	
-	vertexes[NumofPoints*VertexSize] = X;
-	vertexes[NumofPoints*VertexSize+1] = Y;
-	vertexes[NumofPoints*VertexSize+2] = Z;
-	vertexes[NumofPoints*VertexSize+3] = R;
-	vertexes[NumofPoints*VertexSize+4] = G;
-	vertexes[NumofPoints*VertexSize+5] = B;
-	vertexes[NumofPoints*VertexSize+6] = A;
-	vertexes[NumofPoints*VertexSize+7] = -1;
-	vertexes[NumofPoints*VertexSize+8] = -1;
-	vertexes[NumofPoints*VertexSize+9] = -1;
-	vertexes[NumofPoints*VertexSize+10] = 0;
-	vertexes[NumofPoints*VertexSize+11] = 0;
-	
-	NumofPoints++;
-	}
-
-	void Shape::add_Point(GLfloat X, GLfloat Y,GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat S, GLfloat T)
-	{
-	if(vertexes.size() > vertexes.capacity()-VertexSize)
-	{
-	addCap(1);
-	}
-	
-	vertexes[NumofPoints*VertexSize] = X;
-	vertexes[NumofPoints*VertexSize+1] = Y;
-	vertexes[NumofPoints*VertexSize+2] = Z;
-	vertexes[NumofPoints*VertexSize+3] = R;
-	vertexes[NumofPoints*VertexSize+4] = G;
-	vertexes[NumofPoints*VertexSize+5] = B;
-	vertexes[NumofPoints*VertexSize+6] = A;
-	vertexes[NumofPoints*VertexSize+7] = -1;
-	vertexes[NumofPoints*VertexSize+8] = -1;
-	vertexes[NumofPoints*VertexSize+9] = -1;
-	vertexes[NumofPoints*VertexSize+10] = S;
-	vertexes[NumofPoints*VertexSize+11] = T;
-	
-	NumofPoints++;
-	}
-
-	
-	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ)
-	{
-	if(vertexes.size() > vertexes.capacity()-VertexSize)
-	{
-	addCap(1);
-	}
-	
-	vertexes[NumofPoints*VertexSize] = X;
-	vertexes[NumofPoints*VertexSize+1] = Y;
-	vertexes[NumofPoints*VertexSize+2] = Z;
-	vertexes[NumofPoints*VertexSize+3] = R;
-	vertexes[NumofPoints*VertexSize+4] = G;
-	vertexes[NumofPoints*VertexSize+5] = B;
-	vertexes[NumofPoints*VertexSize+6] = A;
-	vertexes[NumofPoints*VertexSize+7] = NX;
-	vertexes[NumofPoints*VertexSize+8] = NY;
-	vertexes[NumofPoints*VertexSize+9] = NZ;
-	vertexes[NumofPoints*VertexSize+10] = 0;
-	vertexes[NumofPoints*VertexSize+11] = 0;
-	
-	NumofPoints++;
-	}
-
-
-	void Shape::add_Point(GLfloat X, GLfloat Y, GLfloat Z, GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ, GLfloat S, GLfloat T)
-	{
-	if(vertexes.size() > vertexes.capacity()-VertexSize)
-	{
-	addCap(1);
-	}
-	
-	vertexes[NumofPoints*VertexSize] = X;
-	vertexes[NumofPoints*VertexSize+1] = Y;
-	vertexes[NumofPoints*VertexSize+2] = Z;
-	vertexes[NumofPoints*VertexSize+3] = R;
-	vertexes[NumofPoints*VertexSize+4] = G;
-	vertexes[NumofPoints*VertexSize+5] = B;
-	vertexes[NumofPoints*VertexSize+6] = A;
-	vertexes[NumofPoints*VertexSize+7] = NX;
-	vertexes[NumofPoints*VertexSize+8] = NY;
-	vertexes[NumofPoints*VertexSize+9] = NZ;
-	vertexes[NumofPoints*VertexSize+10] = S;
-	vertexes[NumofPoints*VertexSize+11] = T;
-	
-	NumofPoints++;
-	}
 
 
 	void Shape::set_X(int point, GLfloat X)
