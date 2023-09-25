@@ -1,5 +1,5 @@
-#include "Open_GL_Basics.h"
-#include "Shapes.h"
+#include "libraries/Open_GL_Basics.h"
+#include "libraries/Shapes.h"
 #include <random>
 #include <iostream>
 
@@ -31,9 +31,9 @@ sID = activateShaders("shaders/vertexShader1.vert","shaders/fragShader1.frag", v
 
 
 Shape triangle(3);
-triangle.add_Point(-.5,-.5);
-triangle.add_Point(.5,-.5);
-triangle.add_Point(0,.5);
+triangle.add_Point(-800,-800);
+triangle.add_Point(0,0);
+triangle.add_Point(800,800);
 
 triangle.ship_Shape(vID);  
 
@@ -42,8 +42,7 @@ triangle.ship_Shape(vID);
         PreCode(window, sID); //Code goes after here
 
         
-        glUseProgram(sID);
-        
+       triangle.draw_Shape(GL_TRIANGLES); 
         
         continue_run = PostCode(window);
     }
