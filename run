@@ -8,5 +8,9 @@ if [ $? -eq 0 ]; then
   echo "Compilation successful."
 else
   echo "Compilation failed."
+  exit 1
 fi
 
+./main > output.txt 2>&1
+
+rm main

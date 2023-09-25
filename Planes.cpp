@@ -39,10 +39,10 @@ triangle.ship_Shape(vID);
 
     while(continue_run)
     {
-        PreCode(window); //Code goes after here
+        PreCode(window, sID); //Code goes after here
 
         
-        
+        glUseProgram(sID);
         
         
         continue_run = PostCode(window);
