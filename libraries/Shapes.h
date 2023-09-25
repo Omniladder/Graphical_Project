@@ -56,13 +56,14 @@ class Shape
 
 	void ship_Shape(GLint); //TODO Get this to work Might need to use VAO's to store every aspet of the vertex in seperate VBO's and Use that perhaps location may need to be multiplied by 4 to allow for 3 locations for the VBO's to be store in
 	unsigned int get_ID();
+	void draw_Shape(GLenum);
 	
 	private:
 	vector<GLfloat> vertexes;
 	int NumofPoints;
 	int VertexSize = 12;
 	unsigned int shape_location;
-		
+	GLuint vao , vbo;
 	bool ValidVertex(int); //Checks if the Vertex exists
 };
 
@@ -198,14 +199,12 @@ Shape::~Shape()
 	{
 
 
-	GLuint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
 	
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexes.capacity(), vertexes.data(), GL_DYNAMIC_DRAW);
@@ -393,3 +392,18 @@ if(point < NumofPoints)
 	std::cout<<"CALLED INVALID POINT"<<endl;
 	}	
 }
+
+
+void Shape::draw_Shape(GLenum primitive)
+{
+// Bind the vertex array and buffer
+glBindVertexArray(vao);
+glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+// Draw the triangle
+glDrawArrays(primitive, 0, getNumPoints());
+
+// Unbind VAO (optional but good practice)
+glBindVertexArray(0);
+}
+

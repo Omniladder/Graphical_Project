@@ -104,7 +104,6 @@ void APIENTRY GLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLen
 
 void PreCode(GLFWwindow* window, GLuint shader)
 {
-	glUseProgram(shader);
     // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT);
 
