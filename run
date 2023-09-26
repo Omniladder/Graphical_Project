@@ -13,4 +13,3 @@ fi
 
 ./main > output.txt 2>&1
 
-rm main

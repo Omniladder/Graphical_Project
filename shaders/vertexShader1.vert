@@ -17,5 +17,5 @@ fragColor = color;
 fragTexCoord = texture;
 fragNormal = normal;
 
-gl_Position = vec4(position,0);
+gl_Position = vec4(position,1.0);
 }
