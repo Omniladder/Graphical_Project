@@ -207,21 +207,22 @@ Shape::~Shape()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexes.capacity(), vertexes.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertexes.size(), vertexes.data(), GL_DYNAMIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);//Location LOCATION
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//Location LOCATION
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);//COLOR LOCATION
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//COLOR LOCATION
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);//Texture LOCATION
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//Texture LOCATION
 	glEnableVertexAttribArray(2);
 	
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, 0);//Normal LOCATION
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//Normal LOCATION
 	glEnableVertexAttribArray(3);
 	
 	glBindVertexArray(0);
+
 	}
 
 
@@ -242,10 +243,10 @@ Shape::~Shape()
 	vertexes.push_back(X);
     vertexes.push_back(Y);
     vertexes.push_back(Z);
-    vertexes.push_back(R);
-    vertexes.push_back(G);
-    vertexes.push_back(B);
-    vertexes.push_back(A);
+    vertexes.push_back(R / 255);
+    vertexes.push_back(G / 255);
+    vertexes.push_back(B / 255);
+    vertexes.push_back(A / 255);
     vertexes.push_back(NX);
     vertexes.push_back(NY);
     vertexes.push_back(NZ);
