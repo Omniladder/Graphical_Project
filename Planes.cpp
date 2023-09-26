@@ -30,10 +30,10 @@ GLuint vID, fID, sID;
 sID = activateShaders("shaders/vertexShader1.vert","shaders/fragShader1.frag", vID, fID);
 
 
-Shape triangle(3);
-triangle.add_Point(-800,-800);
-triangle.add_Point(0,0);
-triangle.add_Point(800,800);
+Shape triangle(4);
+triangle.add_Point(0,.5);
+triangle.add_Point(.5,0);
+triangle.add_Point(0, -.5);
 
 triangle.ship_Shape(vID);  
 
@@ -41,11 +41,13 @@ triangle.ship_Shape(vID);
     {
         PreCode(window, sID); //Code goes after here
 
-        
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
        triangle.draw_Shape(GL_TRIANGLES); 
         
         continue_run = PostCode(window);
     }
+
+	errorCheck("CODE END");
 
     Close_Window(vID,fID);
 
