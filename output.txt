@@ -1,2 +1,0 @@
- OPENGL NOTIFICATION :: 1: OTHER of NOTIFICATION severity, raised from SHADER COMPILER: Shader Stats: SGPRS: 16 VGPRS: 8 Code Size: 28 LDS: 0 Scratch: 0 Max Waves: 8 Spilled SGPRs: 0 Spilled VGPRs: 0 PrivMem VGPRs: 0 Outputs: 0 PatchOutputs: 0 DivergentLoop: 0 InlineUniforms: 0 (VS, W64)
- OPENGL NOTIFICATION :: 1: OTHER of NOTIFICATION severity, raised from SHADER COMPILER: Shader Stats: SGPRS: 8 VGPRS: 8 Code Size: 16 LDS: 0 Scratch: 0 Max Waves: 8 Spilled SGPRs: 0 Spilled VGPRs: 0 PrivMem VGPRs: 0 Outputs: 1 PatchOutputs: 0 DivergentLoop: 0 InlineUniforms: 0 (PS, W64)
