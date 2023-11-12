@@ -5,17 +5,17 @@ layout(location = 1) in vec4 color;
 layout(location = 2) in vec2 texture;
 layout(location = 3) in vec3 normal;
 
-out vec4 fragColor;
-out vec2 fragTexCoord;
-out vec3 fragNormal;
+out vec4 vertexColor;
+out vec2 vertexTexCoord;
+out vec3 vertexNormal;
 
 
 void main()
 {
 // Pass the vertex attributes to the fragment shader
-fragColor = color;
-fragTexCoord = texture;
-fragNormal = normal;
+vertexColor = color;
+vertexTexCoord = texture;
+vertexNormal = normal;
 
 gl_Position = vec4(position,1.0);
 }

@@ -1064,42 +1064,42 @@ extern "C" {
 #define GLFW_EGL_CONTEXT_API        0x00036002
 #define GLFW_OSMESA_CONTEXT_API     0x00036003
 
-/*! @defgroup shapes Standard cursor shapes
- *  @brief Standard system cursor shapes.
+/*! @defgroup Polygons Standard cursor Polygons
+ *  @brief Standard system cursor Polygons.
  *
  *  See [standard cursor creation](@ref cursor_standard) for how these are used.
  *
  *  @ingroup input
  *  @{ */
 
-/*! @brief The regular arrow cursor shape.
+/*! @brief The regular arrow cursor Polygon.
  *
  *  The regular arrow cursor.
  */
 #define GLFW_ARROW_CURSOR           0x00036001
-/*! @brief The text input I-beam cursor shape.
+/*! @brief The text input I-beam cursor Polygon.
  *
- *  The text input I-beam cursor shape.
+ *  The text input I-beam cursor Polygon.
  */
 #define GLFW_IBEAM_CURSOR           0x00036002
-/*! @brief The crosshair shape.
+/*! @brief The crosshair Polygon.
  *
- *  The crosshair shape.
+ *  The crosshair Polygon.
  */
 #define GLFW_CROSSHAIR_CURSOR       0x00036003
-/*! @brief The hand shape.
+/*! @brief The hand Polygon.
  *
- *  The hand shape.
+ *  The hand Polygon.
  */
 #define GLFW_HAND_CURSOR            0x00036004
-/*! @brief The horizontal resize arrow shape.
+/*! @brief The horizontal resize arrow Polygon.
  *
- *  The horizontal resize arrow shape.
+ *  The horizontal resize arrow Polygon.
  */
 #define GLFW_HRESIZE_CURSOR         0x00036005
-/*! @brief The vertical resize arrow shape.
+/*! @brief The vertical resize arrow Polygon.
  *
- *  The vertical resize arrow shape.
+ *  The vertical resize arrow Polygon.
  */
 #define GLFW_VRESIZE_CURSOR         0x00036006
 /*! @} */
@@ -4454,12 +4454,12 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* window, double xpos, double ypos);
  */
 GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot);
 
-/*! @brief Creates a cursor with a standard shape.
+/*! @brief Creates a cursor with a standard Polygon.
  *
- *  Returns a cursor with a [standard shape](@ref shapes), that can be set for
+ *  Returns a cursor with a [standard Polygon](@ref Polygons), that can be set for
  *  a window with @ref glfwSetCursor.
  *
- *  @param[in] shape One of the [standard shapes](@ref shapes).
+ *  @param[in] Polygon One of the [standard Polygons](@ref Polygons).
  *  @return A new cursor ready to use or `NULL` if an
  *  [error](@ref error_handling) occurred.
  *
@@ -4475,7 +4475,7 @@ GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
  *
  *  @ingroup input
  */
-GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape);
+GLFWAPI GLFWcursor* glfwCreateStandardCursor(int Polygon);
 
 /*! @brief Destroys a cursor.
  *
