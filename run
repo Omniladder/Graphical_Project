@@ -12,4 +12,3 @@ else
 fi
 
 ./main 2> "output.txt"
-
