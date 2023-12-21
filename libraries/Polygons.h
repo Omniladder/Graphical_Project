@@ -19,6 +19,7 @@ class Polygon
 
 	vertex get_Point(int index);
 	void set_Point(int index, GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ, GLfloat S, GLfloat T);
+	void set_Point(int, struct vertex);
 
 	void bind_Polygon(GLint); //TODO Get this to work Might need to use VAO's to store every aspet of the vertex in seperate VBO's and Use that perhaps location may need to be multiplied by 4 to allow for 3 locations for the VBO's to be store in
 	void draw_Polygon(GLenum);
@@ -61,10 +62,10 @@ void Polygon::bind_Polygon(GLint vShader)
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, (GLvoid *) (3 * sizeof(GLfloat)));//COLOR LOCATION
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//Texture LOCATION
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, (GLvoid *) (7 * sizeof(GLfloat)));//Texture LOCATION
 	glEnableVertexAttribArray(2);
 	
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//Normal LOCATION
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, (GLvoid *) (9 * sizeof(GLfloat)));//Normal LOCATION
 	glEnableVertexAttribArray(3);
 	
 	glBindVertexArray(0);
@@ -86,6 +87,11 @@ void Polygon::set_Point(int index, GLfloat X = 0, GLfloat Y = 0, GLfloat Z = 0, 
 	vertexes[index].nz = NZ;
 	vertexes[index].s = S;
 	vertexes[index].t = T;	
+}
+
+void Polygon::set_Point(int index, struct vertex newVertex)
+{
+	vertexes[index] = newVertex;
 }
 
 void Polygon::draw_Polygon(GLenum primitive)

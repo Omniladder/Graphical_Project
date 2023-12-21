@@ -1,5 +1,5 @@
 #include "Open_GL_Basics.h"
-#include "Polygons.h"
+#include "Shapes.h"
 #include <random>
 #include <iostream>
 
@@ -30,21 +30,21 @@ GLuint vID, fID, sID;
 sID = activateShaders("shaders/vertexShader1.vert","shaders/fragShader1.frag", vID, fID);
 
 
-Polygon triangle;
-triangle.set_Point(0,0,.5, 0, 255, 0, 0);
-triangle.set_Point(1,.5,0, 0, 255, 0 ,0);
-triangle.set_Point(2,0, -.5, 0, 255, 0, 0);
+Shape triangle(3);
+triangle.setVertex(0,0,.5, 0, 255, 0, 0);
+triangle.setVertex(1,.5,0, 0, 255, 0 ,0);
+triangle.setVertex(2,0, -.5, 0, 255, 0, 0);
 
-triangle.output_Polygon();
+//triangle.outputShape();
 
-triangle.bind_Polygon(vID);  
+triangle.bindShape(vID);  
 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 while(continue_run)
 {
     PreCode(window, sID); //Code goes after here
 
-    triangle.draw_Polygon(GL_TRIANGLES); 
+    triangle.drawShape(GL_TRIANGLES); 
         
     continue_run = PostCode(window);
 }
