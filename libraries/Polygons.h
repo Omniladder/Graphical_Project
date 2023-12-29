@@ -7,6 +7,11 @@
 using namespace std;
 
 
+/*
+	THIS CODE IS THE BACKEND STUFF AND NOT DESIGNED TO BE USED BY USER AS 
+	THEIR IS A LOT OF REPEAT COORDINATES AND IT PROBABLY WONT BE READABLE
+*/
+
 struct vertex{
 	GLfloat x, y, z, r, g, b, a, nx, ny, nz, s, t;
 };
@@ -14,12 +19,15 @@ struct vertex{
 class Polygon
 {
 	public:
-	Polygon(); //Create Polygon with no Vertexes as Default
+	Polygon();
+	Polygon(int); //Create Polygon with no Vertexes as Default
 	~Polygon();
 
 	vertex get_Point(int index);
 	void set_Point(int index, GLfloat X, GLfloat Y,GLfloat Z,GLfloat R, GLfloat G, GLfloat B, GLfloat A, GLfloat NX, GLfloat NY, GLfloat NZ, GLfloat S, GLfloat T);
 	void set_Point(int, struct vertex);
+
+	void changeSize(int);
 
 	void bind_Polygon(GLint); //TODO Get this to work Might need to use VAO's to store every aspet of the vertex in seperate VBO's and Use that perhaps location may need to be multiplied by 4 to allow for 3 locations for the VBO's to be store in
 	void draw_Polygon(GLenum);
@@ -27,19 +35,32 @@ class Polygon
 	void output_Polygon(); //JUST FOR DEBUGGING IN FUTURE FOR NOW
 
 	private:
-	struct vertex vertexes[3];
-	int NumofPoints = 3; //HOW MANY VERTEXES THEIR ARE
+	vector<struct vertex> vertexes;
+	int NumofPoints; //HOW MANY VERTEXES THEIR ARE
 	int VertexSize = 12; //HOW MANY DATA POINTS ARE IN EACH VERTEX
 	GLuint vao , vbo;
 };
 
-
 Polygon::Polygon()
-{}
+{
+	NumofPoints = 0;
+}
+
+Polygon::Polygon(int size)
+{
+	NumofPoints = size;
+	vertexes.reserve(size);
+}
 
 
 Polygon::~Polygon()
 {}
+
+void Polygon::changeSize(int newSize)
+{
+	NumofPoints = newSize;
+	vertexes.reserve(NumofPoints);
+}
 
 vertex Polygon::get_Point(int index)
 {return vertexes[index];}
@@ -52,8 +73,8 @@ void Polygon::bind_Polygon(GLint vShader)
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * NumofPoints * VertexSize, vertexes, GL_DYNAMIC_DRAW);
-	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * NumofPoints * VertexSize, vertexes.data(), GL_DYNAMIC_DRAW);
+
 	int dataSize = VertexSize * sizeof(GLfloat);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//Location LOCATION
@@ -109,9 +130,9 @@ void Polygon::draw_Polygon(GLenum primitive)
 
 void Polygon::output_Polygon()
 {
-	cout <<"Vertex 1  X:"<<vertexes[0].x <<" Y: "<< vertexes[0].y << " Z: "<< vertexes[0].z <<endl;
-	cout <<"Vertex 2  X:"<<vertexes[1].x <<" Y: "<< vertexes[1].y << " Z: "<< vertexes[1].z <<endl;
-	cout <<"Vertex 3  X:"<<vertexes[2].x <<" Y: "<< vertexes[2].y << " Z: "<< vertexes[2].z <<endl;
+	for (int i = 0;  i < NumofPoints; i++)
+	cout <<"Vertex " << i <<  " X: " <<vertexes[i].x <<" Y: "<< vertexes[i].y << " Z: "<< vertexes[i].z
+	<< " R: "<< vertexes[i].r << " G: " << vertexes[i].g << " B: " << vertexes[i].b << endl;
 }
 
 // Equation for Perspective return x * (2 / (z - user_Z)); or return y * (2 / (z - user_Z));
