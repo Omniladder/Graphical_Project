@@ -49,18 +49,21 @@ class Polygon
 	int VertexSize = 12; //HOW MANY DATA POINTS ARE IN EACH VERTEX
 	GLuint vao , vbo;
 	string textureData;
+	bool textureSet;
 	int textLength, textHeight, numChannels; //Texture Data Stuff
 };
 
 Polygon::Polygon()
 {
 	NumofPoints = 0;
+	textureSet = false;
 }
 
 Polygon::Polygon(int size)
 {
 	NumofPoints = size;
 	vertexes.reserve(size);
+	textureSet = false;
 }
 
 
@@ -97,10 +100,12 @@ void Polygon::bind_Polygon(GLint vShader)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); //ONCE AGAIN NOT SURE ABOUT MINMAPPING YET
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	unsigned char* data;
 
-
-	unsigned char* data = stbi_load(textureData.c_str(), &textLength, &textHeight, &numChannels, 3); //Loads in texture data for usage
-
+	if(textureSet)
+		data = stbi_load(textureData.c_str(), &textLength, &textHeight, &numChannels, 3); //Loads in texture data for usage
+	else
+		data = stbi_load("textures/noTexture.jpg", &textLength, &textHeight, &numChannels, 3); //Loads in texture data for usage
 
 
 	if(data)
@@ -180,7 +185,10 @@ void Polygon::draw_Polygon(GLenum primitive)
 }
 
 void Polygon::setTexture(string textureFile)
-{textureData = textureFile;}
+{
+	textureData = textureFile;
+	textureSet = true;
+}
 
 void Polygon::output_Polygon()
 {

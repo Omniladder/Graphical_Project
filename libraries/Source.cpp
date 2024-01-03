@@ -48,7 +48,7 @@ triangle.setVertex(14, -.1, -.1, 0, 255, 0, 0);
 triangle.setVertex(15, -.3, -.2, 0, 255, 0, 0);
 triangle.setVertex(16, -1, 0, 0, 255, 0, 0);
 
-triangle.setTexture("textures/RonaldReagan.jpeg");
+//triangle.setTexture("textures/RonaldReagan.jpeg");
 
 triangle.bindShape(vID);  
 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
