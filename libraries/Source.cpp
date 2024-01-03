@@ -27,8 +27,7 @@ GLuint vID, fID, sID;
 
 
 
-sID = activateShaders("shaders/vertexShader1.vert","shaders/fragShader1.frag", vID, fID);
-
+sID = activateShaders("libraries/shaders/vertexShader1.vert","libraries/shaders/fragShader1.frag", vID, fID);
 
 Shape triangle(17);
 triangle.setVertex(0, 0, .9, 0, 255, 0, 0);
@@ -49,6 +48,7 @@ triangle.setVertex(14, -.1, -.1, 0, 255, 0, 0);
 triangle.setVertex(15, -.3, -.2, 0, 255, 0, 0);
 triangle.setVertex(16, -1, 0, 0, 255, 0, 0);
 
+triangle.setTexture("textures/RonaldReagan.jpeg");
 
 triangle.bindShape(vID);  
 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

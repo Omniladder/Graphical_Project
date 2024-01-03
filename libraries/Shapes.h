@@ -1,7 +1,7 @@
 #include <vector>
 #include "Open_GL_Basics.h"
 #include <GL/glew.h>
-#include "glfw3.h" //Graphical usage
+#include "thirdParty/glfw3.h" //Graphical usage
 #include <iostream>
 #include "Polygons.h"
 #include <list>
@@ -19,6 +19,8 @@ class Shape{
 
 	void bindShape(GLint);	
 	void drawShape();
+
+	void setTexture(string);
 
 	void outputPolygon(); //This outputs the polygons vertices for debugging
 	void outputShape(); //This Outputs the inputted shapeverties for debugging
@@ -91,6 +93,10 @@ struct vertex Shape::getVertex(int index)
 	return points[index];
 }
 
+void Shape::setTexture(string textureLoc)
+{
+	triangles.setTexture(textureLoc);	
+}
 
 void Shape::bindShape(GLint vShader)
 {
@@ -143,7 +149,8 @@ void Shape::triangulate() //Shapes must go clockwise for this too work else it'l
 				if(insideChecker == vectorList.end())
 				insideChecker = vectorList.begin();
 
-				double areaSum = .5 * abs(currentPoint->x * (nextPoint->y - insideChecker->y) + nextPoint->x * (insideChecker->y - currentPoint->y) + insideChecker->x * (currentPoint->y - nextPoint->y)) 
+				double areaSum = 
+				.5 * abs(currentPoint->x * (nextPoint->y - insideChecker->y) + nextPoint->x * (insideChecker->y - currentPoint->y) + insideChecker->x * (currentPoint->y - nextPoint->y)) 
 				+ 
 				.5 * abs(nextPoint->x * (prevPoint->y - insideChecker->y) + prevPoint->x * (insideChecker->y - nextPoint->y) + insideChecker->x * (nextPoint->y - prevPoint->y)) 
 				+ 

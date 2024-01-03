@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include <GL/glew.h>
-#include "glfw3.h" //Graphical usage
+#include "thirdParty/glfw3.h" //Graphical usage
 
 
 void ClearErrors() {
