@@ -22,5 +22,5 @@ sudo apt install libglew-dev
 
 
 ## Textures
-<img src="https://github.com/Omniladder/Graphical_Project/readmeAssets/TextureImage.png" alt="Texture_Screenshot" width="300" />
+<img src="https://github.com/Omniladder/Graphical_Project/blob/master/readmeAssets/TextureImage.png" alt="Texture_Screenshot" width="300" />
 
