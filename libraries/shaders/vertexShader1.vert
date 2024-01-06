@@ -9,6 +9,8 @@ out vec4 vertexColor;
 out vec2 vertexTexCoord;
 out vec3 vertexNormal;
 
+uniform vec3 movementDirections;
+vec3 currentMovement = vec3(0.0,0.0,0.0);
 
 void main()
 {
@@ -17,5 +19,15 @@ vertexColor = color;
 vertexTexCoord = texture;
 vertexNormal = normal;
 
-gl_Position = vec4(position,1.0);
+//mat4 translationTransformation = mat4(1.0);
+
+//translationTransformation[3][0] = movementDirections[0];
+//translationTransformation[3][1] = movementDirections[1];
+//translationTransformation[3][2] = movementDirections[2];
+
+
+    currentMovement = currentMovement + movementDirections;
+
+
+    gl_Position =  vec4(position + currentMovement,1.0);
 }

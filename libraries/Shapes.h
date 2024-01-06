@@ -37,9 +37,11 @@ class Shape{
 
 Shape::Shape(int size)
 {
+	ClearErrors();
 	numSides = size;
 	triangles.changeSize(3 * (numSides - 2)); //Ear clipping makes n -2 triangles and each have 3 sides thus the size
 	points = new struct vertex[size];
+	errorCheck("Inside Shape Constructor");
 }
 
 Shape::~Shape()
@@ -49,6 +51,8 @@ Shape::~Shape()
 
 void Shape::setVertex(int index, GLfloat X = 0, GLfloat Y = 0, GLfloat Z = 0, GLfloat R = 255, GLfloat G = 255, GLfloat B = 255, GLfloat A = 255, GLfloat NX = -1, GLfloat NY = -1, GLfloat NZ = -1, GLfloat S = 0, GLfloat T = 0)
 {
+	ClearErrors();
+
 	if (index < 0 || index >= numSides)
 	{
 		printf("INVALID INDEX\n");
@@ -64,13 +68,14 @@ void Shape::setVertex(int index, GLfloat X = 0, GLfloat Y = 0, GLfloat Z = 0, GL
 	newVertex.g = G / 255;
 	newVertex.b = B / 255;
 	newVertex.a = A / 255;
+	newVertex.s = S;
+	newVertex.t = T;
 	newVertex.nx = NX;
 	newVertex.ny = NY;
 	newVertex.nz = NZ;
-	newVertex.s = S;
-	newVertex.t = T;
 
 	points[index] = newVertex;
+	errorCheck("Set Vertex");
 }
 void Shape::setVertex(int index, struct vertex newVertex)
 {
@@ -101,12 +106,12 @@ void Shape::setTexture(string textureLoc)
 void Shape::bindShape(GLint vShader)
 {
 	triangulate();
-	triangles.bind_Polygon(vShader);
+	triangles.bindPolygon(vShader);
 }
 
 void Shape::drawShape()
 {
-	triangles.draw_Polygon(GL_TRIANGLES);
+	triangles.drawPolygon(GL_TRIANGLES);
 }
 
 void Shape::triangulate() //Shapes must go clockwise for this too work else it'll like either do the outside or create an infinte loop
@@ -169,9 +174,9 @@ void Shape::triangulate() //Shapes must go clockwise for this too work else it'l
 
 			if(isPolygon) //add to polygons remove i from vectorList increment numPolgons decrement sidesLeft
 			{
-				triangles.set_Point(numPolygons * 3, *currentPoint);
-				triangles.set_Point(numPolygons * 3 + 1, *nextPoint);
-				triangles.set_Point(numPolygons * 3 + 2, *prevPoint);
+				triangles.setPoint(numPolygons * 3, *currentPoint);
+				triangles.setPoint(numPolygons * 3 + 1, *nextPoint);
+				triangles.setPoint(numPolygons * 3 + 2, *prevPoint);
 				vectorList.erase(currentPoint);
 				currentPoint = prevPoint;
 				prevPoint = prev(currentPoint);
@@ -205,18 +210,17 @@ void Shape::triangulate() //Shapes must go clockwise for this too work else it'l
 	prevPoint = --vectorList.end();	
 
 
-	triangles.set_Point(numPolygons * 3, (*currentPoint));
-	triangles.set_Point(numPolygons * 3 + 1, (*nextPoint));
-	triangles.set_Point(numPolygons * 3 + 2, (*prevPoint));
+	triangles.setPoint(numPolygons * 3, (*currentPoint));
+	triangles.setPoint(numPolygons * 3 + 1, (*nextPoint));
+	triangles.setPoint(numPolygons * 3 + 2, (*prevPoint));
 }
 
 
 void Shape::outputPolygon()
-{triangles.output_Polygon();}
+{triangles.outputPolygon();}
 
 void Shape::outputShape()
 {
 	for (int i = 0; i < numSides; i++)
-	cout << "Vertex " << i << " X: "<< points[i].x << " Y: " << points[i].y << " Z: " << points[i].z 
-	<< " R: "<< points[i].r << " G: " << points[i].g << " B: " << points[i].b << endl;
+	printf("Vertex %d X: %f Y: %f Z: %f R: %f G: %f B: %f \n", i , points[i].x, points[i].y, points[i].z, points[i].r, points[i].g, points[i].b);
 }

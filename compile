@@ -11,6 +11,3 @@ else
   exit 1
 fi
 
-./main
-
-#rm main
