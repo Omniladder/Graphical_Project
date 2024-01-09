@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Compile the C++ program
-g++ libraries/Source.cpp -o main -lGLEW -lglfw -lGL -lGLU
+g++ libraries/Source.cpp -o main -lGLEW -lglfw -lGL -lGLU  -I./libraries/thirdParty/glm
 
 # Check if compilation was successful
 if [ $? -eq 0 ]; then

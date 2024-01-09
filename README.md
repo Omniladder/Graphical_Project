@@ -1,5 +1,6 @@
 
 # Instructions
+use ./setup to be download necessary libraries ::NEEDS SUPERUSER::
 use ./compile to compile
 and ./main to run
 
