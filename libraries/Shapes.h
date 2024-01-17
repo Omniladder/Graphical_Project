@@ -20,7 +20,12 @@ class Shape{
 	void bindShape(GLint);	
 	void drawShape();
 
+	glm::mat4 getTransformationMatrix();
+	void setTransformationMatrix(glm::mat4, GLint);
+
 	void setTexture(string);
+
+	GLuint getObjectId();
 
 	void outputPolygon(); //This outputs the polygons vertices for debugging
 	void outputShape(); //This Outputs the inputted shapeverties for debugging
@@ -48,6 +53,10 @@ Shape::~Shape()
 {
 	delete[] points;
 }
+
+
+GLuint Shape::getObjectId()
+{return triangles.getPolygonId();}
 
 void Shape::setVertex(int index, GLfloat X = 0, GLfloat Y = 0, GLfloat Z = 0, GLfloat R = 255, GLfloat G = 255, GLfloat B = 255, GLfloat A = 255, GLfloat NX = -1, GLfloat NY = -1, GLfloat NZ = -1, GLfloat S = 0, GLfloat T = 0)
 {
@@ -224,3 +233,13 @@ void Shape::outputShape()
 	for (int i = 0; i < numSides; i++)
 	printf("Vertex %d X: %f Y: %f Z: %f R: %f G: %f B: %f \n", i , points[i].x, points[i].y, points[i].z, points[i].r, points[i].g, points[i].b);
 }
+
+glm::mat4 Shape::getTransformationMatrix()
+{return triangles.getTransformationMatrix();}
+
+void Shape::setTransformationMatrix(glm::mat4 newMatrix, GLint shaderId)
+{triangles.setTransformationMatrix(newMatrix, shaderId);}
+
+
+
+

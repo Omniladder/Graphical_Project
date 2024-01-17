@@ -1,13 +1,11 @@
 #include <iostream>
-#include <fstream>
+//#include <fstream>
 #include "Shapes.h"
-#include <string>
+//#include <string>
 #include <GL/glew.h>
+#include "glm/glm.hpp"
 #include "thirdParty/glfw3.h" //Graphical usage
-#include <unordered_map>
 
-unordered_map<int , void*> functionMap;
-unordered_map<int, void*> parameterMap;
 
 template <typename... Args>
 void checkKey(void(* calledFunction)(Args...), int key, GLFWwindow* window, Args... functionParameters)
@@ -19,14 +17,16 @@ void checkKey(void(* calledFunction)(Args...), int key, GLFWwindow* window, Args
     }
 }
 
-void moveObject(double moveAmount, char axis, GLuint vertexShaderId) //Make sure the Char is Uppercase
+void moveObject(double moveAmount, char axis, GLuint vertexShaderId, Shape shapeToTransform) //Make sure the Char is Uppercase
 {
-    GLint translationVector = glGetUniformLocation(vertexShaderId ,"movementDirections");
-    errorCheck("Inside move Object");
+	ClearErrors();
+	GLint translationVector = glGetUniformLocation(vertexShaderId ,"transformationMatrix");
+//	GLint uniformId = glGetUniformLocation(vertexShaderId ,"moveId");
+	errorCheck("Inside move Object");
 
-    static double xValue = 0.0;
+/*    static double xValue = 0.0;
     static double yValue = 0.0;
-    static double zValue = 0.0;
+    static double zValue = 0.0; */
 
     if(translationVector == -1)
     {
@@ -34,23 +34,30 @@ void moveObject(double moveAmount, char axis, GLuint vertexShaderId) //Make sure
         return;
     }
 
+    glm::mat4 newMatrix;
+
     switch (axis)
     {
         case 'X':
-            xValue += moveAmount;
-
+		newMatrix = shapeToTransform.getTransformationMatrix();
+		newMatrix[3][0] += moveAmount;
+		shapeToTransform.setTransformationMatrix(newMatrix, vertexShaderId);
             break;
+ 	case 'Y':    
+		newMatrix = shapeToTransform.getTransformationMatrix();
+		newMatrix[3][1] += moveAmount;
+		shapeToTransform.setTransformationMatrix(newMatrix, vertexShaderId);
+	    break;
     
-        case 'Y': 
-            yValue += moveAmount;
-            break;
-    
-        case 'Z':
-            zValue += moveAmount;
-            break;
+        case 'Z': 
+		newMatrix = shapeToTransform.getTransformationMatrix();
+		newMatrix[3][2] += moveAmount;
+		shapeToTransform.setTransformationMatrix(newMatrix, vertexShaderId);
+	    break;
     
         default:
         break;
     }
-    glUniform3f(translationVector, xValue, yValue ,zValue);
+
+	
 }
