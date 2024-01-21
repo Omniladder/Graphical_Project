@@ -1,9 +1,6 @@
-#include <iostream>
 #include <fstream>
 #include "Shapes.h"
 #include <string>
-#include <GL/glew.h>
-#include "thirdParty/glfw3.h" //Graphical usage
 #include <unordered_map>
 
 unordered_map<int , void*> functionMap;
@@ -12,7 +9,6 @@ unordered_map<int, void*> parameterMap;
 template <typename... Args>
 void checkKey(void(* calledFunction)(Args...), int key, GLFWwindow* window, Args... functionParameters)
 {
-    
     if(glfwGetKey(window, key) == GLFW_PRESS)
     {
         calledFunction(functionParameters...);
@@ -21,6 +17,7 @@ void checkKey(void(* calledFunction)(Args...), int key, GLFWwindow* window, Args
 
 void moveObject(double moveAmount, char axis, GLuint vertexShaderId) //Make sure the Char is Uppercase
 {
+	ClearErrors();
     GLint translationVector = glGetUniformLocation(vertexShaderId ,"movementDirections");
     errorCheck("Inside move Object");
 
@@ -52,5 +49,13 @@ void moveObject(double moveAmount, char axis, GLuint vertexShaderId) //Make sure
         default:
         break;
     }
-    glUniform3f(translationVector, xValue, yValue ,zValue);
+
+	glm::mat4 translationMatrix(1.0);
+
+	translationMatrix[3][0] = xValue;
+	translationMatrix[3][1] = yValue;
+	translationMatrix[3][2] = zValue;
+
+    glUniformMatrix4fv(translationVector, 1, GL_FALSE, &translationMatrix[0][0]);
+	errorCheck("Bottom of Move Object");
 }

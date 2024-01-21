@@ -6,6 +6,7 @@
 #include "thirdParty/glfw3.h" //Graphical usage
 #include "thirdParty/stb_image.h" //Used for importing textures
 #include <iostream>
+#include "thirdParty/glm/glm/glm.hpp"
 
 using namespace std;
 
@@ -17,12 +18,14 @@ using namespace std;
 
 struct vertex{
 	GLfloat x, y, z, r, g, b, a, s, t, nx, ny, nz; // Location Coordinates, Color, Texture Coordinates, Normal Vector
+	GLint objectId;
 };
 
 class Polygon
 {
 	public:
 	Polygon(int); //Create Polygon with no Vertexes as Default
+	Polygon(int, GLint); //Used for setting multiple Objects to Move Together
 	~Polygon(); //Deletes Polygon
 
 	vertex getPoint(int index); //returns a vertex
@@ -38,6 +41,8 @@ class Polygon
 
 	void outputPolygon(); //JUST FOR DEBUGGING IN FUTURE FOR NOW
 
+	GLint getObjectId();//needed to retrieve objectId so other stuff can be set to it
+
 	private:
 	
 	void calculateTextureCoords(); //this is for identifying all the texture coordinates which is calculated in runtime
@@ -49,6 +54,7 @@ class Polygon
 	//Vertex Array Object 
 	GLuint vao , vbo; //ID for Vertex Array Object and Vertex Buffer Object
 	
+	GLint objectId;
 	string textureData; //stores texture file location and name
 	bool textureSet; //holds if the texture has been set or not defaults to off
 	int textLength, textHeight, numChannels; //Texture Data Stuff
@@ -57,11 +63,20 @@ class Polygon
 
 Polygon::Polygon(int size = 0) //COnstructor for Polygon
 {
+	static GLint newObjectId = 0;
 	NumofPoints = size; //Keeps track of the size
 	vertexes.reserve(size); //Sets up the Number of vectors to its expected amount
 	textureSet = false; //Deafults textures to not set as the user has yet to actually input the texture that they want to use
+	objectId = newObjectId;
+	newObjectId++;
 }
 
+Polygon::Polygon(int size, GLint newObjectId)
+{	
+	vertexes.reserve(size); //Sets up the Number of vectors to its expected amount
+	textureSet = false; //Deafults textures to not set as the user has yet to actually input the texture that they want to use
+	objectId = newObjectId;
+}
 
 Polygon::~Polygon()
 {}
@@ -75,6 +90,9 @@ void Polygon::changeSize(int newSize) //Don't use if you dont have to the time c
 vertex Polygon::getPoint(int index) // Returns a point for modification or just ot get the values
 {return vertexes[index];}
 
+GLint Polygon::getObjectId()
+{return objectId;}
+
 void Polygon::bindPolygon(GLint vShader)  //binds the Polygon to the Pgraphics Pipeline //Input is the vertex Shader to use on the data 
 {
 	ClearErrors();
@@ -84,7 +102,9 @@ void Polygon::bindPolygon(GLint vShader)  //binds the Polygon to the Pgraphics P
 
 	glGenVertexArrays(1, &vao); //Creates the Vertex Array
 	glBindVertexArray(vao); // sets vao as the VAO to use
-
+	
+	for(int i = 0; i < NumofPoints; i++)
+	{vertexes[i].objectId = objectId;}
 
 	//This Section Sets up Textures
 	unsigned int texture;//Stores the texture ID	
@@ -126,25 +146,28 @@ void Polygon::bindPolygon(GLint vShader)  //binds the Polygon to the Pgraphics P
 
 	glGenBuffers(1, &vbo); //Makes the buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vbo); //binds the buffer to the Graphics Pipeline	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * NumofPoints * VertexSize, vertexes.data(), GL_DYNAMIC_DRAW); //sets the buffer data to the vertex data
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertex) * NumofPoints, vertexes.data(), GL_DYNAMIC_DRAW); //sets the buffer data to the vertex data
 
 	
 
-	int dataSize = VertexSize * sizeof(GLfloat); // calculates the size of the vertex array
+//	int dataSize = VertexSize * sizeof(GLfloat); // calculates the size of the vertex array
 
 
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, 0);//Location LOCATION //Sets stride for Location 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), 0);//Location LOCATION //Sets stride for Location 
 	glEnableVertexAttribArray(0); // Activates Location Variables
 
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, (GLvoid *) (3 * sizeof(GLfloat)));//COLOR LOCATION Sets Stride for the Color variables
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid *) (3 * sizeof(GLfloat)));//COLOR LOCATION Sets Stride for the Color variables
 	glEnableVertexAttribArray(1); //Activates Color Variables
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, (GLvoid *) (7 * sizeof(GLfloat)));//Texture LOCATION Sets the stride for the Texture coordinates
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid *) (7 * sizeof(GLfloat)));//Texture LOCATION Sets the stride for the Texture coordinates
 	glEnableVertexAttribArray(2); //Activates Texture Coordinates
 	
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(GL_FLOAT) * 12, (GLvoid *) (9 * sizeof(GLfloat)));//Normal LOCATION Sets the stride for Normal vector
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid *) (9 * sizeof(GLfloat)));//Normal LOCATION Sets the stride for Normal vector
 	glEnableVertexAttribArray(3); //Acitvates tge Normal Vectors
+	
+	glVertexAttribPointer(4, 1, GL_UNSIGNED_INT, GL_FALSE, sizeof(vertex), (GLvoid *) (12 * sizeof(GLfloat)));//Normal LOCATION Sets the stride for Normal vector
+	glEnableVertexAttribArray(4); //Acitvates tge Normal Vectors
 	
 	glBindVertexArray(0); //Detaches the vertex array from the Graphics Pipeline
 
